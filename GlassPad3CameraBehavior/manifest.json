@@ -1,0 +1,14 @@
+﻿{
+  "author": "Ibodan",
+  "description": [
+    "Make avatar monitors in GlassPad3.1 to keep focusing the avatar"
+  ],
+  "gameVersion": "1.9.0",
+  "id": null,
+  "name": "GlassPad3CameraBehavior",
+  "version": "0.0.1",
+  "features": [
+  ],
+  "links": {
+  },
+}
