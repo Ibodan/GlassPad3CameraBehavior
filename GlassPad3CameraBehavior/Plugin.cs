@@ -14,7 +14,7 @@ namespace GlassPad3CameraBehavior
     {
 		private class FrontCameraBehavior : MonoBehaviour
 		{
-			public CustomAvatar.Tracking.AvatarInput input { get; set; }
+			public CustomAvatar.Tracking.IAvatarInput input { get; set; }
 
 			private Queue<float> queue = new Queue<float>(128);
 
@@ -33,7 +33,7 @@ namespace GlassPad3CameraBehavior
 			private void Update()
 			{
 				Pose headPose;
-				if (input.TryGetHeadPose(out headPose) == false) return;
+				if (input.TryGetPose(CustomAvatar.Tracking.DeviceUse.Head, out headPose) == false) return;
 
 				float y = headPose.position.y;
 				if (enqueueCounter++ >= enqueueInterval)
@@ -85,7 +85,12 @@ namespace GlassPad3CameraBehavior
 
 			logger.Debug("camera found");
 
-			System.Object avatar = ReflectionUtil.GetPrivateProperty<System.Object>(CustomAvatar.AvatarManager.instance, "currentlySpawnedAvatar");
+			GameObject avatarContainer = GameObject.Find("Avatar Container");
+			if (avatarContainer == null) yield break;
+
+			logger.Debug("avatar container found");
+
+			CustomAvatar.Avatar.SpawnedAvatar avatar = avatarContainer.GetComponentInChildren<CustomAvatar.Avatar.SpawnedAvatar>();
 			if (avatar == null) yield break;
 
 			logger.Debug("spawned avatar found");
@@ -95,7 +100,7 @@ namespace GlassPad3CameraBehavior
 
 			logger.Debug("tracking found");
 
-			CustomAvatar.Tracking.AvatarInput input = ReflectionUtil.GetPrivateField<CustomAvatar.Tracking.AvatarInput>(tracking, "input");
+			CustomAvatar.Tracking.IAvatarInput input = ReflectionUtil.GetPrivateField<CustomAvatar.Tracking.IAvatarInput>(tracking, "_input");
 			if (input == null) yield break;
 
 			logger.Debug("input found");
@@ -110,6 +115,5 @@ namespace GlassPad3CameraBehavior
 
 			logger.Info("ready to go");
 		}
-
 	}
 }
