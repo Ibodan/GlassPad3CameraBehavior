@@ -18,41 +18,26 @@ namespace GlassPad3CameraBehavior
 
 			private Queue<float> queue = new Queue<float>(128);
 
-			private int enqueueInterval = 4;
+			private const int updateInterval = 4;
 
-			private int enqueueCounter;
-
-			private float averageQueue;
+			private int updateCounter;
 
 			private void Start()
 			{
 				logger.Debug("behavior start");
-				queue.Enqueue(0f);
 			}
 
 			private void Update()
 			{
+				if (updateCounter++ < updateInterval) return;
+				updateCounter = 0;
+
 				Pose headPose;
 				if (input.TryGetPose(CustomAvatar.Tracking.DeviceUse.Head, out headPose) == false) return;
-
-				float y = headPose.position.y;
-				if (enqueueCounter++ >= enqueueInterval)
-				{
-					queue.Enqueue(y);
-					while (queue.Count > 100)
-					{
-						queue.Dequeue();
-					}
-					enqueueCounter = 0;
-					float num = 0f;
-					for (int i = 0; i < queue.Count; i++)
-					{
-						num += queue.ElementAt(i) * ((float)Math.Sin(Math.PI * 2.0 * (double)((float)i / (float)queue.Count) - 0.25) * 0.28f + 1f);
-					}
-					averageQueue = num / (float)queue.Count;
-				}
+				queue.Enqueue(headPose.position.y);
+				while (queue.Count > 100) { queue.Dequeue(); }
 				Vector3 position = transform.position;
-				position.y = averageQueue * 0.92f;
+				position.y = queue.Average() * 0.92f;
 				transform.position = position;
 			}
 		}
@@ -95,7 +80,7 @@ namespace GlassPad3CameraBehavior
 
 			logger.Debug("spawned avatar found");
 
-			System.Object tracking = ReflectionUtil.GetPrivateProperty<System.Object>(avatar, "tracking");
+			System.Object tracking = avatar.GetComponent<CustomAvatar.Avatar.AvatarTracking>();
 			if (tracking == null) yield break;
 
 			logger.Debug("tracking found");

@@ -3,10 +3,10 @@
   "description": [
     "Make avatar monitors in GlassPad3.1 to keep focusing the avatar"
   ],
-  "gameVersion": "1.13.0",
+  "gameVersion": "1.29.1",
   "id": null,
   "name": "GlassPad3CameraBehavior",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "dependsOn": {
       "BSIPA": "^4.1.3"
   },
