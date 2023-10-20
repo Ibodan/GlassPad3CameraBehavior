@@ -14,7 +14,7 @@ namespace GlassPad3CameraBehavior
     {
 		private class FrontCameraBehavior : MonoBehaviour
 		{
-			public CustomAvatar.Tracking.IAvatarInput input { get; set; }
+			public CustomAvatar.Avatar.SpawnedAvatar avatar { get; set; }
 
 			private Queue<float> queue = new Queue<float>(128);
 
@@ -32,9 +32,7 @@ namespace GlassPad3CameraBehavior
 				if (updateCounter++ < updateInterval) return;
 				updateCounter = 0;
 
-				Pose headPose;
-				if (input.TryGetPose(CustomAvatar.Tracking.DeviceUse.Head, out headPose) == false) return;
-				queue.Enqueue(headPose.position.y);
+				queue.Enqueue(avatar.head.position.y);
 				while (queue.Count > 100) { queue.Dequeue(); }
 				Vector3 position = transform.position;
 				position.y = queue.Average() * 0.92f;
@@ -96,7 +94,7 @@ namespace GlassPad3CameraBehavior
 			{
 				behavior = camera.gameObject.AddComponent<FrontCameraBehavior>();
 			}
-			behavior.input = input;
+			behavior.avatar = avatar;
 
 			logger.Info("ready to go");
 		}
