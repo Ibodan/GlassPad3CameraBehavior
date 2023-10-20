@@ -77,16 +77,6 @@ namespace GlassPad3CameraBehavior
 			if (avatar == null) yield break;
 
 			logger.Debug("spawned avatar found");
-
-			System.Object tracking = avatar.GetComponent<CustomAvatar.Avatar.AvatarTracking>();
-			if (tracking == null) yield break;
-
-			logger.Debug("tracking found");
-
-			CustomAvatar.Tracking.IAvatarInput input = ReflectionUtil.GetPrivateField<CustomAvatar.Tracking.IAvatarInput>(tracking, "_input");
-			if (input == null) yield break;
-
-			logger.Debug("input found");
 			logger.Debug("setting up behavior");
 
 			FrontCameraBehavior behavior = camera.GetComponent<FrontCameraBehavior>();
